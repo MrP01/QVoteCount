@@ -3,7 +3,8 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 
 matplotlib.use('Qt4Agg')
-matplotlib.rcParams['backend.qt4'] = 'PySide'
+# matplotlib.rcParams['backend.qt4'] = 'PySide'
+
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from Engine.App import App
@@ -207,11 +208,11 @@ class VoteEditor(QWidget):
         self.clear()
 
     def clear(self):
-        self.keyListener1.clear();
+        self.keyListener1.clear()
         self.keyListener2.clear()
-        self.keyListener3.clear();
+        self.keyListener3.clear()
         self.keyListener4.clear()
-        self.keyListener5.clear();
+        self.keyListener5.clear()
         self.keyListener6.clear()
         self.keyListener1.setFocus()
 
@@ -240,7 +241,7 @@ class VoteEditor(QWidget):
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Return:
             self.save()
-            event.accept();
+            event.accept()
             return
         event.ignore()
 
@@ -272,7 +273,7 @@ class VoteApp(App):
         self.statView = StatView(self.appManager.mainManager)
         self.keyAssignmentEditor = KeyAssignmentEditor(self.appManager.mainManager, "Assigned keys:")
         self.voteEditor = VoteEditor(self)
-        w1 = QWidget();
+        w1 = QWidget()
         l1 = QGridLayout()
         l1.addWidget(self.keyAssignmentEditor, 0, 0)
         l1.addWidget(self.containerView, 0, 1)
