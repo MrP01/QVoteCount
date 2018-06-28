@@ -14,13 +14,16 @@ class MyAppManager(AppManager, Section):
         self.addApp(app)
         app.start()
 
-    def voteApp(self, *args, **kwargs):
-        app = VoteApp(self, *args, **kwargs)
+    def voteApp(self):
+        app = VoteApp(self)
         self.addApp(app)
         app.start()
 
     def start(self, data):
-        self.setupApp()
+        if len(list(self.mainManager.dbManager.db.participants.allItems())) == 0:
+            self.setupApp()
+        else:
+            self.voteApp()
         print("Apps started")
         return True
 

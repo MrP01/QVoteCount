@@ -13,7 +13,7 @@ from Engine.ContainerView import ContainerView
 from Engine.QtUIWrapper import QtModelWrapper
 from Engine.Message import MessagePopup
 
-from .DbConfig import Participant, VoteGroup, Vote
+from .DbConfig import Vote, VoteGroup, Participant
 
 
 class StatView(FigureCanvas):
@@ -305,6 +305,11 @@ class SetupApp(App):
 
     def submit(self):
         # with self.appManager.mainManager.dbManager.dbClient:
+        # partic_before = set([p.name for p in self.appManager.mainManager.dbManager.db.participants.allItems()])
+        # partic_after = set(self.participantList.allItems())
+        # diff = partic_before.difference(partic_after)
+        # if diff:
+        #     self.appManager.mainManager.dbManager.db.participants.addItems()
         self.appManager.mainManager.dbManager.db.participants.clear()
         self.appManager.mainManager.dbManager.db.participants.addItems(
             Participant(name=name) for name in self.participantList.allItems())
