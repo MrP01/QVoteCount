@@ -1,6 +1,8 @@
+import os
+import webbrowser
+
 from Database.engine.sqlite import SqliteEngine
 from Engine.StartQuitAssistant import Section
-
 from .DbConfig import *
 
 
@@ -11,22 +13,7 @@ class DbManager(Section):
         self.db = ElectionDb(engine=SqliteEngine())
         self.keyAssignments = {}
 
-    def start(self, sessionData):
-        # try:
-        # 	os.remove("election.db")
-        # except FileNotFoundError:
-        # 	pass
-        self.db.open("election.db")
-        # self.db.open("/home/peter/Schule/Sonstiges/Schulsprecherwahl/2015⁄16/election_for_new_system.db")
-        # self.dbClient=self.db.createClient()
-        # with self.dbClient:
-        # 	self.db.participants.addItems([Participant(name="Peter"), Participant(name="Konni")])
-        # 	self.db.voteGroups.addItem(VoteGroup(name="6c"))
-        # self.db.votes.addItems(Vote(vote1=0, groupId=0) for i in range(100))
-        print("Db started")
-        return True
-
-    def quit(self):
+    def generate_report(self):
         import collections
         points, topVotes, voteCount, invalidVotes = self.db.calcPoints()
         sum_points = sum(points.values())
@@ -48,5 +35,46 @@ class DbManager(Section):
                 print("Number of {}. votes: {}".format(vote, tv[vote]))
             print(20 * "-")
 
+        import jinja2
+        env = jinja2.Environment(
+            loader=jinja2.PackageLoader("Src", "templates")
+        )
+        template = env.get_template("report.html")
+        today = datetime.date.today()
+        report_file = "Bericht Schulsprecherwahl %s.html" % today.year
+        with open(report_file, "w") as f:
+            f.write(template.render(
+                today=today,
+                sum_points=sum_points,
+                valid_votes=voteCount,
+                invalid_votes=invalidVotes,
+                participants=[{
+                    "name": self.db.participants.getItem(partic_id),
+                    "points": pts,
+                    "points_perc": pts / sum_points * 100,
+                    "top_votes": topVotes[partic_id],
+                    "top_votes_perc": topVotes[partic_id],
+                } for partic_id, pts in points.items()]
+            ))
+        return report_file
+
+    def start(self, sessionData):
+        # try:
+        # 	os.remove("election.db")
+        # except FileNotFoundError:
+        # 	pass
+        self.db.open("election.db")
+        # self.db.open("/home/peter/Schule/Sonstiges/Schulsprecherwahl/2015⁄16/election_for_new_system.db")
+        # self.dbClient=self.db.createClient()
+        # with self.dbClient:
+        # 	self.db.participants.addItems([Participant(name="Peter"), Participant(name="Konni")])
+        # 	self.db.voteGroups.addItem(VoteGroup(name="6c"))
+        # self.db.votes.addItems(Vote(vote1=0, groupId=0) for i in range(100))
+        print("Db started")
+        return True
+
+    def quit(self):
+        report_file = os.path.abspath(self.generate_report())
         self.db.close()
+        webbrowser.open("file://" + report_file)
         return bytearray()
