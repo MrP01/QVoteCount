@@ -36,10 +36,9 @@ class DbManager(Section):
             print(20 * "-")
 
         import jinja2
-        env = jinja2.Environment(
-            loader=jinja2.PackageLoader("Src", "templates")
-        )
-        template = env.get_template("report.html")
+        from .report_template import report_template
+        env = jinja2.Environment()
+        template = env.from_string(report_template)
         today = datetime.date.today()
         report_file = "Bericht Schulsprecherwahl %s.html" % today.year
         with open(report_file, "w") as f:
@@ -74,7 +73,5 @@ class DbManager(Section):
         return True
 
     def quit(self):
-        report_file = os.path.abspath(self.generate_report())
         self.db.close()
-        webbrowser.open("file://" + report_file)
         return bytearray()

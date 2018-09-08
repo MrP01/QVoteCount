@@ -1,4 +1,4 @@
-import matplotlib
+import matplotlib, os
 from PySide.QtCore import *
 from PySide.QtGui import *
 
@@ -273,6 +273,8 @@ class VoteApp(App):
         self.statView = StatView(self.appManager.mainManager)
         self.keyAssignmentEditor = KeyAssignmentEditor(self.appManager.mainManager, "Assigned keys:")
         self.voteEditor = VoteEditor(self)
+        self.genreportButton = QPushButton("Generate Report")
+        self.genreportButton.clicked.connect(self.generateReport)
         w1 = QWidget()
         l1 = QGridLayout()
         l1.addWidget(self.keyAssignmentEditor, 0, 0)
@@ -280,11 +282,16 @@ class VoteApp(App):
         l1.addWidget(self.voteEditor, 1, 0, 1, 2)
         w1.setLayout(l1)
         w2 = QWidget()
-        w2.setLayout(BLayoutHelper(self.statView, self.statView.updateButton, orientation=QBoxLayout.TopToBottom))
+        w2.setLayout(BLayoutHelper(self.statView, self.statView.updateButton, self.genreportButton, orientation=QBoxLayout.TopToBottom))
         splitter = QSplitter()
         splitter.addWidget(w1)
         splitter.addWidget(w2)
         self.setLayout(BLayoutHelper(splitter))
+
+    def generateReport(self):
+        report_file = os.path.abspath(self.appManager.mainManager.dbManager.generate_report())
+        import webbrowser
+        webbrowser.open("file://" + report_file)
 
 
 class SetupApp(App):
