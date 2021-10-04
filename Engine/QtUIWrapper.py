@@ -1,4 +1,4 @@
-from PySide.QtCore import QAbstractTableModel, QModelIndex, Qt, Signal
+from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt, Signal
 
 from Database.core import (AbstractContainerEventFilter, ReferenceAttribute,
                            AddItemEvent, AddItemsEvent, InsertItemEvent, SetItemEvent, RemoveItemEvent,

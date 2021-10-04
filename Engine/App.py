@@ -1,5 +1,5 @@
-from PySide.QtCore import QObject
-from PySide.QtGui import QWidget, QTabWidget
+from PySide6.QtCore import QObject
+from PySide6.QtWidgets import QWidget, QTabWidget
 
 from Database.tools import Item, ItemStorage
 

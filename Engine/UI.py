@@ -1,5 +1,5 @@
-from PySide.QtCore import QDateTime, QDate
-from PySide.QtGui import *
+from PySide6.QtCore import QDateTime, QDate
+from PySide6.QtWidgets import *
 
 
 def BLayoutHelper(*items, orientation=QBoxLayout.LeftToRight):

@@ -1,4 +1,4 @@
-from PySide.QtCore import QRect
+from PySide6.QtCore import QRect
 
 from base.dataStream import DataStream
 

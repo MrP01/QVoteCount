@@ -1,9 +1,9 @@
 import matplotlib, os
-from PySide.QtCore import *
-from PySide.QtGui import *
+from PySide6.QtCore import *
+from PySide6.QtWidgets import *
 
 matplotlib.use('Qt4Agg')
-# matplotlib.rcParams['backend.qt4'] = 'PySide'
+# matplotlib.rcParams['backend.qt4'] = 'PySide6'
 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas

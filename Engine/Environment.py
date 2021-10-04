@@ -1,6 +1,6 @@
 import socket
 
-from PySide.QtCore import QDateTime, QProcess
+from PySide6.QtCore import QDateTime, QProcess
 
 
 class Console(object):

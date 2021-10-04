@@ -1,5 +1,5 @@
-from PySide.QtCore import *
-from PySide.QtNetwork import QAbstractSocket
+from PySide6.QtCore import *
+from PySide6.QtNetwork import QAbstractSocket
 from base.StorageEngine import *
 from base.UADatabase import *
 from base.dataStream import DataStream

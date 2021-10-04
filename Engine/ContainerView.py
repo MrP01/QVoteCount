@@ -1,5 +1,5 @@
-from PySide.QtCore import *
-from PySide.QtGui import *
+from PySide6.QtCore import *
+from PySide6.QtWidgets import *
 
 from .QtUIWrapper import QtModelWrapper
 from .UI import createAction

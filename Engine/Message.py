@@ -1,5 +1,5 @@
-from PySide.QtCore import QSize, QTimer, Qt
-from PySide.QtGui import (QLabel, QHBoxLayout, QVBoxLayout, QIcon, QPainter,
+from PySide6.QtCore import QSize, QTimer, Qt
+from PySide6.QtWidgets import (QLabel, QHBoxLayout, QVBoxLayout, QIcon, QPainter,
                           QColor, QPushButton)
 
 from .MainWindow import PopupDialog

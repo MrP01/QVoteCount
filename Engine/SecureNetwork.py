@@ -1,4 +1,4 @@
-from PySide.QtNetwork import QSslSocket
+from PySide6.QtNetwork import QSslSocket
 
 from .DataStream import DataStream
 from .ItemStorage import ItemStorage, Item

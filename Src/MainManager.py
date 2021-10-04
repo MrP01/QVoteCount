@@ -1,4 +1,4 @@
-from PySide.QtCore import QObject
+from PySide6.QtCore import QObject
 
 from Engine.StartQuitAssistant import StartQuitAssistant
 from .AppManager import MyAppManager

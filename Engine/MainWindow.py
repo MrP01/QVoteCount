@@ -1,5 +1,5 @@
-from PySide.QtCore import Qt, Signal, QTimer, QEventLoop
-from PySide.QtGui import QMainWindow, QFrame, QAction, QIcon, QPainter
+from PySide6.QtCore import Qt, Signal, QTimer, QEventLoop
+from PySide6.QtWidgets import QMainWindow, QFrame, QAction, QIcon, QPainter
 
 
 class PopupDialog(QFrame):

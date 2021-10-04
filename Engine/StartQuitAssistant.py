@@ -1,6 +1,6 @@
 import struct
 
-from PySide.QtCore import QObject, Signal
+from PySide6.QtCore import QObject, Signal
 
 from Database.datastream import DataStream
 

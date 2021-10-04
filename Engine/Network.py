@@ -1,7 +1,7 @@
 import netifaces
 
-from PySide.QtCore import (QObject, QByteArray, QDataStream, QIODevice, QThread, Signal, QEventLoop, QTimer)
-from PySide.QtNetwork import (QAbstractSocket, QTcpServer, QTcpSocket)
+from PySide6.QtCore import (QObject, QByteArray, QDataStream, QIODevice, QThread, Signal, QEventLoop, QTimer)
+from PySide6.QtNetwork import (QAbstractSocket, QTcpServer, QTcpSocket)
 from base.ItemStorage import ItemStorage, Item
 from base.dataStream import DataStream
 

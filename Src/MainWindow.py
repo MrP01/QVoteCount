@@ -1,4 +1,4 @@
-from PySide.QtCore import QByteArray
+from PySide6.QtCore import QByteArray
 
 from Engine.MainWindow import MainWindow
 

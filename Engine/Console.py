@@ -1,5 +1,5 @@
-from PySide.QtCore import Qt
-from PySide.QtGui import QFont
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QFont
 
 
 def coloredPrint(text, color=Qt.black, highlight=None, font=QFont()):

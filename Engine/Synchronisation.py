@@ -1,4 +1,4 @@
-from PySide.QtCore import *
+from PySide6.QtCore import *
 
 from .DataStream import DataStream
 from .Network import RequestHandler, Request
