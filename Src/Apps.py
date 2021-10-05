@@ -2,11 +2,11 @@ import matplotlib, os
 from PySide6.QtCore import *
 from PySide6.QtWidgets import *
 
-matplotlib.use('Qt4Agg')
+matplotlib.use('Qt5Agg')
 # matplotlib.rcParams['backend.qt4'] = 'PySide6'
 
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from Engine.App import App
 from Engine.UI import SimpleTextList, BLayoutHelper
 from Engine.ContainerView import ContainerView

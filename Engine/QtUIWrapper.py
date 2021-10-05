@@ -93,7 +93,7 @@ class QtModelWrapper(AbstractContainerEventFilter, QAbstractTableModel):
 
     def repopulateModel(self):
         self.updateIdsByRows()
-        self.reset()
+        # self.reset()
 
     def rowCount(self, parent=QModelIndex()):
         return len(self._idsByRows)
