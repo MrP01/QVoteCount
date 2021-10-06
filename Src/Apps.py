@@ -1,6 +1,7 @@
 import matplotlib, os
 from PySide6.QtCore import *
 from PySide6.QtWidgets import *
+from PySide6.QtGui import QKeySequence
 
 matplotlib.use('Qt5Agg')
 # matplotlib.rcParams['backend.qt4'] = 'PySide6'
@@ -29,16 +30,23 @@ class StatView(FigureCanvas):
         points, topVotes, voteCount, invalidVotes = self.mainManager.dbManager.db.calcPoints()
 
         # Points
+        print(points, participants, topVotes)
         self.pointsAxes = self.figure.add_subplot(2, 1, 1)
         self.pointsAxes.set_title("Points")
-        self.pointsAxes.pie(list(points.values()), explode=[0.1] * len(participants),
+        pieChart = list(points.values())
+        if sum(pieChart) == 0:
+            pieChart = [1] * len(participants)
+        self.pointsAxes.pie(pieChart, explode=[0.1] * len(participants),
                             labels=[parti.name for parti in participants],
                             shadow=True, autopct="%1.1f%%", startangle=90, colors=self.colors)
 
         # Top1 Votes
         self.topAxes = self.figure.add_subplot(2, 1, 2)
         self.topAxes.set_title("Top1 Votes")
-        self.topAxes.pie([topV[1] for pId, topV in topVotes.items()], explode=[0.1] * len(participants),
+        pieChart = [topV[1] for pId, topV in topVotes.items()]
+        if sum(pieChart) == 0:
+            pieChart = [1] * len(participants)
+        self.topAxes.pie(pieChart, explode=[0.1] * len(participants),
                          labels=[parti.name for parti in participants],
                          shadow=True, autopct="%1.1f%%", startangle=90, colors=self.colors)
 
