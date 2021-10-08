@@ -1,7 +1,8 @@
-import matplotlib, os
+import matplotlib
+import os
 from PySide6.QtCore import *
-from PySide6.QtWidgets import *
 from PySide6.QtGui import QKeySequence
+from PySide6.QtWidgets import *
 
 matplotlib.use('Qt5Agg')
 # matplotlib.rcParams['backend.qt4'] = 'PySide6'

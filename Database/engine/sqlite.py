@@ -24,7 +24,6 @@ class ContainerEngine(core.AbstractContainerEngine):
         self._createSql()
 
     def addItem(self, item):
-        vals = self._makeVals(item)
         self.cursor.execute(self._addSql, self._makeVals(item))
         return self.cursor.lastrowid
 
@@ -150,12 +149,12 @@ class ContainerEngine(core.AbstractContainerEngine):
             .format(tblName=self.tblName)
         self._removeSql = "DELETE FROM {tblName} WHERE id=?;" \
             .format(tblName=self.tblName)
+        # noinspection SqlWithoutWhere
         self._clearSql = "DELETE FROM {tblName};" \
             .format(tblName=self.tblName)
 
     def _makeVals(self, item):
-        return {name: getattr(item, name)
-                for name in self.colNames}
+        return {name: getattr(item, name) for name in self.colNames}
 
     def _makeItem(self, data):
         return self.entityCls(**dict(zip(self.colNames, data)))
@@ -188,6 +187,8 @@ class ContainerEngine(core.AbstractContainerEngine):
         return self.mainEngine.connection.cursor()
 
     tblName = property(lambda self: self.entityCls.__realName__)
+
+
 # entityCls=property(lambda self: self.container.entityCls) #too slow
 
 

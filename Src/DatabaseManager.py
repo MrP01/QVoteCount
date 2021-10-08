@@ -1,5 +1,4 @@
-import os
-import webbrowser
+import jinja2
 
 from Database.engine.sqlite import SqliteEngine
 from Engine.StartQuitAssistant import Section
@@ -35,10 +34,8 @@ class DbManager(Section):
                 print("Number of {}. votes: {}".format(vote, tv[vote]))
             print(20 * "-")
 
-        import jinja2
-        from .report_template import report_template
         env = jinja2.Environment()
-        template = env.from_string(report_template)
+        template = env.get_template("report.jinja")
         today = datetime.date.today()
         report_file = "Bericht Schulsprecherwahl %s.html" % today.year
         with open(report_file, "w") as f:

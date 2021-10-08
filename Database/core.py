@@ -31,6 +31,7 @@ class ItemError(DatabaseError):  # (i.e. KeyError) must be subclass of DatabaseE
 
 # Attributes
 
+# noinspection PyMethodMayBeStatic
 class Attribute(object, metaclass=ABCMeta):
     def __init__(self, default):
         self.default = default
@@ -356,8 +357,7 @@ class AbstractContainerEngine(object, metaclass=ABCMeta):
 
     @abstractmethod
     def itemIds(self):
-        while False:
-            yield 0
+        raise NotImplementedError()
 
     def addItem(self, item):
         return next(self.addItems([item]))
