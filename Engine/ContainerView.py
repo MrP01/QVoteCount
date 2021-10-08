@@ -6,11 +6,11 @@ from .UI import createAction
 
 
 class SortFilterProxyModel(QSortFilterProxyModel):  # Only for QtModelWrapper models
-    def filterAcceptsRow(self, row, parent=None):
+    def filterAcceptsRow(self, row, parent=None, **kwargs):
         source = self.sourceModel()
         for col in range(source.columnCount()):
             data = source.data(source.index(row, col, parent), self.filterRole())
-            if (data is not None) and (self.filterRegExp().indexIn(str(data).lower()) >= 0):
+            if (data is not None) and (self.filterRegularExpression().match(str(data).lower()).hasMatch()):
                 return True
         return False
 
@@ -36,8 +36,7 @@ class TableView(QTableView):
     def selectedItems(self):
         itemIds = set()  # No duplicates
         for index in self.selectedIndexes():
-            itemIds.add(self.containerView.modelWrapper.idByIndex(self.model().
-                                                                  mapToSource(index)))
+            itemIds.add(self.containerView.modelWrapper.idByIndex(self.model().mapToSource(index)))
         return itemIds
 
     def deleteSelectedItems(self):
@@ -47,13 +46,13 @@ class TableView(QTableView):
 
 
 class ContainerView(QWidget):
-    itemDoubleClicked = Signal(int)
+    itemDoubleClicked = Signal(int, name="itemDoubleClicked")
 
     def __init__(self, container=None, modelWrapper=None, parent=None):
         QWidget.__init__(self, parent)
         self._container = None
         self._modelWrapper = None
-        self.proxyModel = SortFilterProxyModel()
+        self.proxyModel = SortFilterProxyModel(self)
         self.proxyModel.rowsInserted.connect(self.updateLen)
         self.proxyModel.rowsRemoved.connect(self.updateLen)
 

@@ -9,4 +9,4 @@ if __name__ == "__main__":
     # app.setStyle(QWindowsStyle())
     manager = MainManager()
     manager.start()
-    app.exec_()
+    app.exec()

@@ -1,8 +1,10 @@
 __pycache__/
 .idea/
 *.db
+*.db-journal
 *.session
 *.spec
+Bericht*.html
 build/
 dist/
 stuff/

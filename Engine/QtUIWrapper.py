@@ -61,8 +61,7 @@ class QtModelWrapper(AbstractContainerEventFilter, QAbstractTableModel):
 
     def setItemEvent(self, event):
         row = self.rowById(event.itemId)
-        self.dataChanged.emit(self.index(row, 0),
-                              self.index(row, self.columnCount() - 1))
+        self.dataChanged.emit(self.index(row, 0), self.index(row, self.columnCount() - 1))
 
     def removeItemEvent(self, event):
         row = self.rowById(event.itemId)
@@ -74,7 +73,7 @@ class QtModelWrapper(AbstractContainerEventFilter, QAbstractTableModel):
         self.repopulateModel()
 
     def clearEvent(self, event):
-        self.reset()
+        self.resetInternalData()
 
     # def modelAccessClient(self):
     # 	return self._modelAccessClient
@@ -93,9 +92,10 @@ class QtModelWrapper(AbstractContainerEventFilter, QAbstractTableModel):
 
     def repopulateModel(self):
         self.updateIdsByRows()
-        # self.reset()
 
     def rowCount(self, parent=QModelIndex()):
+        if not self._idsByRows:
+            self.updateIdsByRows()
         return len(self._idsByRows)
 
     def columnCount(self, parent=QModelIndex()):

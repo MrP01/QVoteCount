@@ -13,7 +13,6 @@ class DbManager(Section):
         self.keyAssignments = {}
 
     def generate_report(self):
-        import collections
         points, topVotes, voteCount, invalidVotes = self.db.calcPoints()
         sum_points = sum(points.values())
         points = collections.OrderedDict(sorted(points.items(), key=lambda i: i[1], reverse=True))
@@ -34,7 +33,7 @@ class DbManager(Section):
                 print("Number of {}. votes: {}".format(vote, tv[vote]))
             print(20 * "-")
 
-        env = jinja2.Environment()
+        env = jinja2.Environment(loader=jinja2.FileSystemLoader(searchpath="Src"))
         template = env.get_template("report.jinja")
         today = datetime.date.today()
         report_file = "Bericht Schulsprecherwahl %s.html" % today.year

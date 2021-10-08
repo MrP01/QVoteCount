@@ -1,5 +1,6 @@
-import matplotlib
 import os
+
+import matplotlib
 from PySide6.QtCore import *
 from PySide6.QtGui import QKeySequence
 from PySide6.QtWidgets import *
