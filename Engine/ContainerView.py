@@ -14,6 +14,7 @@ class SortFilterProxyModel(QSortFilterProxyModel):  # Only for QtModelWrapper mo
                 return True
         return False
 
+
 # def lessThan(self, left, right):
 # 	if left.column() != right.column():
 # 		print("Cols not equal (SortFilterProxyModel)")
