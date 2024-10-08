@@ -89,7 +89,7 @@ class Interface(object):
         interface = Interface()
         interface.name = name
         addresses = netifaces.ifaddresses(name)
-        if not netifaces.AF_INET in addresses.keys():
+        if netifaces.AF_INET not in addresses.keys():
             raise Interface.Error()
         interface.addresses = [addresses[x][0]["addr"] for x in (netifaces.AF_INET, netifaces.AF_INET6)]
         interface.netmasks = [addresses[x][0]["netmask"] for x in (netifaces.AF_INET, netifaces.AF_INET6)]
@@ -140,7 +140,7 @@ class Request(QObject, Item):
     def waitForResponse(self, timeout=3000):
         if self.postOffice.socket.state() != QAbstractSocket.ConnectedState:
             raise NetworkError(NetworkError.NotConnected)
-        if not (self.state in (Request.WaitingForResponse, Request.Finished)):
+        if self.state not in (Request.WaitingForResponse, Request.Finished):
             raise NetworkError(NetworkError.RequestWrongState)
         loop = QEventLoop()
         QTimer.singleShot(timeout, loop.quit)
