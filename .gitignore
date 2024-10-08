@@ -8,3 +8,5 @@ Bericht*.html
 build/
 dist/
 stuff/
+.venv
+

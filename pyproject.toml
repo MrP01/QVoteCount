@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "qvotecount"
+version = "0.1.0"
+description = ""
+authors = ["MrP01 <peter@waldert.at>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12, <3.13"
+pyside6 = "^6.7.3"
+matplotlib = "^3.9.2"
+jinja2 = "^3.1.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
