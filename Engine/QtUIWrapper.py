@@ -1,8 +1,17 @@
 from PySide6.QtCore import QAbstractTableModel, QModelIndex, Qt, Signal
 
-from Database.core import (AbstractContainerEventFilter, ReferenceAttribute,
-                           AddItemEvent, AddItemsEvent, InsertItemEvent, SetItemEvent, RemoveItemEvent,
-                           ClearEvent, UpdateEvent, AbstractItemEvent)
+from Database.core import (
+    AbstractContainerEventFilter,
+    ReferenceAttribute,
+    AddItemEvent,
+    AddItemsEvent,
+    InsertItemEvent,
+    SetItemEvent,
+    RemoveItemEvent,
+    ClearEvent,
+    UpdateEvent,
+    AbstractItemEvent,
+)
 
 
 class QtModelWrapper(AbstractContainerEventFilter, QAbstractTableModel):
@@ -17,8 +26,9 @@ class QtModelWrapper(AbstractContainerEventFilter, QAbstractTableModel):
         for col, (name, attr) in enumerate(container.entityCls.attributes.items()):
             self._headers[col] = name
             if isinstance(attr, ReferenceAttribute):
-                self._referenceContainers[col] = next(filter(lambda c: c.entityCls == attr.entityCls,
-                                                             self.container.database.containers.values()))
+                self._referenceContainers[col] = next(
+                    filter(lambda c: c.entityCls == attr.entityCls, self.container.database.containers.values())
+                )
         self._idsByRows = {}
 
     def filterEvent(self, event):

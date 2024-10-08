@@ -82,6 +82,7 @@ class PopupDialog(QFrame):
 # ~ self.reject()
 # ~ event.ignore()
 
+
 class MainWindow(QMainWindow):
     closeRequested = Signal()
 

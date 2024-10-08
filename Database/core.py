@@ -8,6 +8,7 @@ from abc import ABCMeta, abstractmethod
 
 # Exceptions
 
+
 class DatabaseError(Exception):  # Base Class for DB Errors
     pass
 
@@ -30,6 +31,7 @@ class ItemError(DatabaseError):  # (i.e. KeyError) must be subclass of DatabaseE
 
 
 # Attributes
+
 
 # noinspection PyMethodMayBeStatic
 class Attribute(object, metaclass=ABCMeta):
@@ -108,6 +110,7 @@ class ReferenceAttribute(IdAttribute):
 
 # Entity API
 
+
 class EntityMeta(type):
     def __new__(mcs, name, bases, attrs):
         attributes = {}  # unsorted
@@ -175,8 +178,9 @@ class AbstractEntity(object, metaclass=EntityMeta):
         return self.__class__(**kws)
 
     def __repr__(self):
-        return "{}: {}".format(self.__class__.__name__, {name: getattr(self, name)
-                                                         for name in self.__class__.attributes.keys()})
+        return "{}: {}".format(
+            self.__class__.__name__, {name: getattr(self, name) for name in self.__class__.attributes.keys()}
+        )
 
     def __str__(self):
         return repr(self)
@@ -204,16 +208,19 @@ class Entity(AbstractEntity):
 
 # Events
 
+
 class AbstractEvent(object):
     def __init__(self):
         pass
 
 
 # Events of database
-class OpenDbEvent(AbstractEvent): pass
+class OpenDbEvent(AbstractEvent):
+    pass
 
 
-class CloseDbEvent(AbstractEvent): pass
+class CloseDbEvent(AbstractEvent):
+    pass
 
 
 class AddContainerEvent(AbstractEvent):
@@ -229,19 +236,24 @@ class AbstractItemEvent(AbstractEvent):
         self.itemId = itemId
 
 
-class AddItemEvent(AbstractItemEvent): pass
+class AddItemEvent(AbstractItemEvent):
+    pass
 
 
-class InsertItemEvent(AbstractItemEvent): pass
+class InsertItemEvent(AbstractItemEvent):
+    pass
 
 
-class SetItemEvent(AbstractItemEvent): pass
+class SetItemEvent(AbstractItemEvent):
+    pass
 
 
-class GetItemEvent(AbstractItemEvent): pass
+class GetItemEvent(AbstractItemEvent):
+    pass
 
 
-class RemoveItemEvent(AbstractItemEvent): pass
+class RemoveItemEvent(AbstractItemEvent):
+    pass
 
 
 class AddItemsEvent(AbstractEvent):
@@ -250,7 +262,8 @@ class AddItemsEvent(AbstractEvent):
         self.itemIds = itemIds
 
 
-class GetItemsEvent(AbstractEvent): pass
+class GetItemsEvent(AbstractEvent):
+    pass
 
 
 class FilterItemsEvent(AbstractEvent):
@@ -260,13 +273,16 @@ class FilterItemsEvent(AbstractEvent):
         self.itemIds = itemIds
 
 
-class UpdateEvent(AbstractEvent): pass
+class UpdateEvent(AbstractEvent):
+    pass
 
 
-class ClearEvent(AbstractEvent): pass
+class ClearEvent(AbstractEvent):
+    pass
 
 
 # Event Filters (e.g. for logging, or for Updating an UI)
+
 
 class _AbstractEventFilter(object):
     def filterEvent(self, event):
@@ -292,6 +308,7 @@ class AbstractContainerEventFilter(_AbstractEventFilter):
 
 
 # Engines
+
 
 class AbstractDatabaseEngine(object, metaclass=ABCMeta):
     def __init__(self):
@@ -393,6 +410,7 @@ class AbstractContainerEngine(object, metaclass=ABCMeta):
 
 # Database object
 
+
 class Database(object):
     """
     Abstraction of a Database
@@ -463,8 +481,9 @@ class Database(object):
 
     def setEngine(self, engine):
         if self.isOpen:
-            raise RuntimeError("Database already has an Engine;"
-                               "if you want to change it, close the db, set the engine and reopen it")
+            raise RuntimeError(
+                "Database already has an Engine;" "if you want to change it, close the db, set the engine and reopen it"
+            )
         self._engine = engine
         self._engine.database = self
 
@@ -523,8 +542,11 @@ class ItemContainer(object):
         self._engine = self.database.engine.createContainerEngine(self)
         self._engine.container = self
         self._eventFilters = []
-        self._refAttrs = {name: attr.entityCls.__realName__ for name, attr in self.entityCls.attributes.items()
-                          if isinstance(attr, ReferenceAttribute)}
+        self._refAttrs = {
+            name: attr.entityCls.__realName__
+            for name, attr in self.entityCls.attributes.items()
+            if isinstance(attr, ReferenceAttribute)
+        }
 
     def _getRefs(self, item):
         dic = {}
@@ -717,8 +739,9 @@ class ItemContainer(object):
         return self.engine.checkItemExists(itemOrId)
 
     def __repr__(self):
-        return "{name} [{rName}]: {c}".format(name=self.entityCls.__containerName__,
-                                              rName=self.entityCls.__realName__, c=len(self))
+        return "{name} [{rName}]: {c}".format(
+            name=self.entityCls.__containerName__, rName=self.entityCls.__realName__, c=len(self)
+        )
 
     def __str__(self):
         return self.entityCls.__containerName__

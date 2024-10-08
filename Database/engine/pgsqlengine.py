@@ -1,8 +1,17 @@
 import psycopg2
 
-from ..core import (AbstractDatabaseEngine, AbstractContainerEngine, ItemError,
-                    MetaItem, BoolAttribute, DateTimeAttribute, StringAttribute, IntAttribute,
-                    FloatAttribute, BlobAttribute)
+from ..core import (
+    AbstractDatabaseEngine,
+    AbstractContainerEngine,
+    ItemError,
+    MetaItem,
+    BoolAttribute,
+    DateTimeAttribute,
+    StringAttribute,
+    IntAttribute,
+    FloatAttribute,
+    BlobAttribute,
+)
 from ..tools import isinstancePool
 
 
@@ -20,29 +29,25 @@ class PgSqlTable(object):
         # Define sql statements to effectively increase speed
         self.tblName = tblName
         self.entityCls = entityCls
-        self._insertSql = "INSERT INTO {tblName} ({fields}) VALUES ({values});" \
-            .format(tblName=self.tblName, fields=", ".join(self.entityCls.attributes.keys()),
-                    values=", ".join(":" + name for name in self.entityCls.attributes.keys()))
-        self._setSql = "UPDATE {tblName} SET {fields} WHERE id=:id;" \
-            .format(tblName=self.tblName, fields=", ".join("{name}=:{name}".format(name=name)
-                                                           for name in self.entityCls.attributes.keys() if
-                                                           name != "id"))
-        self._getSql = "SELECT * FROM {tblName} WHERE id=?;" \
-            .format(tblName=self.tblName)
-        self._getManySql = "SELECT * FROM {tblName} WHERE id in (?);" \
-            .format(tblName=tblName)
-        self._getAllSql = "SELECT * FROM {tblName};" \
-            .format(tblName=self.tblName)
-        self._getIdsSql = "SELECT id FROM {tblName};" \
-            .format(tblName=self.tblName)
-        self._checkItemSql = "SELECT id FROM {tblName} WHERE id=? LIMIT 1;" \
-            .format(tblName=tblName)
-        self._countSql = "SELECT COUNT (*) FROM {tblName};" \
-            .format(tblName=self.tblName)
-        self._removeSql = "DELETE FROM {tblName} WHERE id=?;" \
-            .format(tblName=self.tblName)
-        self._clearSql = "DELETE FROM {tblName};" \
-            .format(tblName=self.tblName)
+        self._insertSql = "INSERT INTO {tblName} ({fields}) VALUES ({values});".format(
+            tblName=self.tblName,
+            fields=", ".join(self.entityCls.attributes.keys()),
+            values=", ".join(":" + name for name in self.entityCls.attributes.keys()),
+        )
+        self._setSql = "UPDATE {tblName} SET {fields} WHERE id=:id;".format(
+            tblName=self.tblName,
+            fields=", ".join(
+                "{name}=:{name}".format(name=name) for name in self.entityCls.attributes.keys() if name != "id"
+            ),
+        )
+        self._getSql = "SELECT * FROM {tblName} WHERE id=?;".format(tblName=self.tblName)
+        self._getManySql = "SELECT * FROM {tblName} WHERE id in (?);".format(tblName=tblName)
+        self._getAllSql = "SELECT * FROM {tblName};".format(tblName=self.tblName)
+        self._getIdsSql = "SELECT id FROM {tblName};".format(tblName=self.tblName)
+        self._checkItemSql = "SELECT id FROM {tblName} WHERE id=? LIMIT 1;".format(tblName=tblName)
+        self._countSql = "SELECT COUNT (*) FROM {tblName};".format(tblName=self.tblName)
+        self._removeSql = "DELETE FROM {tblName} WHERE id=?;".format(tblName=self.tblName)
+        self._clearSql = "DELETE FROM {tblName};".format(tblName=self.tblName)
         self._connection = None
         self.cursor = None
         if connection is not None:
@@ -61,11 +66,12 @@ class PgSqlTable(object):
             if name == "id":
                 fields.append("id INT PRIMARY KEY")
                 continue
-            fields.append(r"{name} {type} DEFAULT '{default}'".format(name=name,
-                                                                      type=PgSqlTable.fieldType(attr),
-                                                                      default=attr.default))
-        return "CREATE TABLE {tblName} ({fields});".format(
-            tblName=self.tblName, fields=", ".join(fields))
+            fields.append(
+                r"{name} {type} DEFAULT '{default}'".format(
+                    name=name, type=PgSqlTable.fieldType(attr), default=attr.default
+                )
+            )
+        return "CREATE TABLE {tblName} ({fields});".format(tblName=self.tblName, fields=", ".join(fields))
 
     def createTable(self, exists_ok=False):
         try:
@@ -83,16 +89,14 @@ class PgSqlTable(object):
 
     def addItem(self, item):
         item.id = self.nextItemId()
-        self.cursor.execute(self._insertSql, {name: getattr(item, name)
-                                              for name in self.entityCls.attributes.keys()})
+        self.cursor.execute(self._insertSql, {name: getattr(item, name) for name in self.entityCls.attributes.keys()})
         return item.id
 
     def _assignIdsGen(self, items):
         itemId = self.nextItemId()
         for item in items:
             item.id = itemId
-            yield {name: getattr(item, name)
-                   for name in self.entityCls.attributes.keys()}
+            yield {name: getattr(item, name) for name in self.entityCls.attributes.keys()}
             itemId += 1
 
     def addItems(self, items):
@@ -103,8 +107,9 @@ class PgSqlTable(object):
 
     def insertItem(self, item):
         try:
-            self.cursor.execute(self._insertSql,
-                                {name: getattr(item, name) for name in self.entityCls.attributes.keys()})
+            self.cursor.execute(
+                self._insertSql, {name: getattr(item, name) for name in self.entityCls.attributes.keys()}
+            )
         except psycopg2.IntegrityError:
             raise ItemError(item.id) from None
 
@@ -112,8 +117,7 @@ class PgSqlTable(object):
         for item in items:
             if self.checkItemExists(item.id):
                 raise ItemError(item.id)
-            yield {name: getattr(item, name)
-                   for name in self.entityCls.attributes.keys()}
+            yield {name: getattr(item, name) for name in self.entityCls.attributes.keys()}
 
     def insertItems(self, items):
         self.cursor.executemany(self._insertSql, self._checkItemsNotExistGen(items))
@@ -135,15 +139,13 @@ class PgSqlTable(object):
     def setItem(self, item):
         if not self.checkItemExists(item.id):
             raise ItemError(item.id)
-        self.cursor.execute(self._setSql, {name: getattr(item, name)
-                                           for name in self.entityCls.attributes.keys()})
+        self.cursor.execute(self._setSql, {name: getattr(item, name) for name in self.entityCls.attributes.keys()})
 
     def _checkItemsExistGen(self, items):
         for item in items:
             if not self.checkItemExists(item.id):
                 raise ItemError(item.id)
-            yield {name: getattr(item, name)
-                   for name in self.entityCls.attributes.keys()}
+            yield {name: getattr(item, name) for name in self.entityCls.attributes.keys()}
 
     def setItems(self, items):
         self.cursor.executemany(self._setSql, self._checkItemsExistGen(items))
@@ -218,61 +220,50 @@ class ContainerEngine(PgSqlTable, AbstractContainerEngine):
 
     def addItem(self, item):
         item.id = PgSqlTable.addItem(self, item)
-        self._metas.insertItem(MetaItem(id=item.id,
-                                        lastUpdate=self.container.database.currentDateTime()))
+        self._metas.insertItem(MetaItem(id=item.id, lastUpdate=self.container.database.currentDateTime()))
         return item.id
 
     def _insertOrSetMetasGen(self, items, lastUpdate, deleted):
         for item in items:
             yield item
             try:
-                self._metas.insertItem(MetaItem(id=item.id, lastUpdate=lastUpdate,
-                                                deleted=deleted))
+                self._metas.insertItem(MetaItem(id=item.id, lastUpdate=lastUpdate, deleted=deleted))
             except ItemError:
-                self._metas.setItem(MetaItem(id=item.id, lastUpdate=lastUpdate,
-                                             deleted=deleted))
+                self._metas.setItem(MetaItem(id=item.id, lastUpdate=lastUpdate, deleted=deleted))
 
     def addItems(self, items):
-        return PgSqlTable.addItems(self, self._insertOrSetMetasGen(items,
-                                                                   self.container.database.currentDateTime(), False))
+        return PgSqlTable.addItems(
+            self, self._insertOrSetMetasGen(items, self.container.database.currentDateTime(), False)
+        )
 
     def insertItem(self, item):
         PgSqlTable.insertItem(self, item)
         try:
-            self._metas.insertItem(MetaItem(id=item.id,
-                                            lastUpdate=self.container.database.currentDateTime()))
+            self._metas.insertItem(MetaItem(id=item.id, lastUpdate=self.container.database.currentDateTime()))
         except ItemError:
-            self._metas.setItem(MetaItem(id=item.id,
-                                         lastUpdate=self.container.database.currentDateTime()))
+            self._metas.setItem(MetaItem(id=item.id, lastUpdate=self.container.database.currentDateTime()))
 
     def insertItems(self, items):
-        PgSqlTable.insertItems(self, self._insertOrSetMetasGen(items,
-                                                               self.container.database.currentDateTime(), False))
+        PgSqlTable.insertItems(self, self._insertOrSetMetasGen(items, self.container.database.currentDateTime(), False))
 
     def setItem(self, item):
         PgSqlTable.setItem(self, item)
-        self._metas.setItem(MetaItem(id=item.id,
-                                     lastUpdate=self.container.database.currentDateTime()))
+        self._metas.setItem(MetaItem(id=item.id, lastUpdate=self.container.database.currentDateTime()))
 
     def setItems(self, items):
-        PgSqlTable.setItems(self, self._insertOrSetMetasGen(items,
-                                                            self.container.database.currentDateTime(), False))
+        PgSqlTable.setItems(self, self._insertOrSetMetasGen(items, self.container.database.currentDateTime(), False))
 
     def removeItem(self, itemId):
         PgSqlTable.removeItem(self, itemId)
-        self._metas.setItem(MetaItem(id=itemId,
-                                     lastUpdate=self.container.database.currentDateTime(),
-                                     deleted=True))
+        self._metas.setItem(MetaItem(id=itemId, lastUpdate=self.container.database.currentDateTime(), deleted=True))
 
     def _setMetasDeletedGen(self, itemIds, lastUpdate):
         for itemId in itemIds:
             yield itemId
-            self._metas.setItem(MetaItem(id=itemId, lastUpdate=lastUpdate,
-                                         deleted=True))
+            self._metas.setItem(MetaItem(id=itemId, lastUpdate=lastUpdate, deleted=True))
 
     def removeItems(self, itemIds):
-        PgSqlTable.removeItems(self, self._setMetasDeletedGen(itemIds,
-                                                              self.container.database.currentDateTime()))
+        PgSqlTable.removeItems(self, self._setMetasDeletedGen(itemIds, self.container.database.currentDateTime()))
 
     def update(self):
         pass
@@ -319,14 +310,12 @@ class PgSqlEngine(AbstractDatabaseEngine):
         new = False
         while True:
             try:
-                self._connection = psycopg2.connect(database=dbName, host=host, port=port,
-                                                    user=user, password=password)
+                self._connection = psycopg2.connect(database=dbName, host=host, port=port, user=user, password=password)
                 break
             except psycopg2.OperationalError as e:
                 print("Db not exist:", e)
                 new = True
-                conn = psycopg2.connect(database="postgres", host=host, port=port,
-                                        user=user, password=password)
+                conn = psycopg2.connect(database="postgres", host=host, port=port, user=user, password=password)
                 conn.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
                 conn.cursor().execute("CREATE DATABASE %s;" % dbName)  # WARNING, security issue
                 conn.close()

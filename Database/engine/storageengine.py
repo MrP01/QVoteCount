@@ -2,8 +2,7 @@ import errno
 import os
 import struct
 
-from .base import (AbstractDatabaseEngine, AbstractContainerEngine,
-                   ItemError, MetaItem)
+from .base import AbstractDatabaseEngine, AbstractContainerEngine, ItemError, MetaItem
 from .datastream import DataStream
 from .itemstorage import ItemStorage
 
@@ -20,8 +19,7 @@ class StorageEngine(AbstractDatabaseEngine):
 
         def addItem(self, item):
             item.id = ItemStorage.addItem(self, item)
-            self._metas[item.id] = MetaItem(id=item.id,
-                                            lastUpdate=self.container.database.currentDateTime())
+            self._metas[item.id] = MetaItem(id=item.id, lastUpdate=self.container.database.currentDateTime())
             return item.id
 
         def addItems(self, items):
@@ -32,8 +30,7 @@ class StorageEngine(AbstractDatabaseEngine):
             if item.id in self.itemIds():
                 raise ItemError(item.id)
             ItemStorage.insertItem(self, item)
-            self._metas[item.id] = MetaItem(id=item.id,
-                                            lastUpdate=self.container.database.currentDateTime())
+            self._metas[item.id] = MetaItem(id=item.id, lastUpdate=self.container.database.currentDateTime())
 
         def insertItems(self, items):
             for item in items:

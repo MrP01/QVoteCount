@@ -164,7 +164,7 @@ class ProblemPopup(PopupDialog):
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Return:
             self.hide()
-            event.accept();
+            event.accept()
             return
         PopupDialog.keyPressEvent(self, event)
 

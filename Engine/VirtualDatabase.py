@@ -68,8 +68,7 @@ class VDBEngine(StorageEngine):
         return VDBContainerEngine(self.postOffice, container)
 
     def checkAccess(self):
-        if not (self.postOffice.socket.state() ==
-                QAbstractSocket.ConnectedState):
+        if not (self.postOffice.socket.state() == QAbstractSocket.ConnectedState):
             raise NetworkError(NetworkError.NotConnected)
 
 
@@ -202,8 +201,7 @@ class VCRequestHandler(QObject):
         self.connections = list()
         self.open = False
         for container in self.database.containers.allItems():
-            self.handlers[chr(container.id)] = VCContainerRequestHandler(
-                self, container)
+            self.handlers[chr(container.id)] = VCContainerRequestHandler(self, container)
 
     def handleRequest(self, description, data):
         if description == Signature.Open:
@@ -328,14 +326,12 @@ class VCContainerRequestHandler(QObject):
         lastUpdate = stream.readDateTime()
         response = bytearray()
         stream = DataStream(response)
-        metas = tuple(filter(lambda meta: meta.lastUpdate >= lastUpdate,
-                             self.container.metaItems()))
+        metas = tuple(filter(lambda meta: meta.lastUpdate >= lastUpdate, self.container.metaItems()))
         stream.writeUInt16(len(metas))
         for meta in metas:
             MetaItem.writeItem(response, meta)
             if not meta.deleted:
-                self.container.entityCls.writeItem(response, self.container.engine.
-                                                   getItem(meta.itemId))
+                self.container.entityCls.writeItem(response, self.container.engine.getItem(meta.itemId))
         stream.writeDateTime(self.container.database.currentDateTime())
         return response
 

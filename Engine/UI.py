@@ -41,8 +41,9 @@ class SimpleTextList(QGroupBox):
         layout = QGridLayout()
         layout.addWidget(self.itemEdit, 0, 0, 1, 2)
         layout.addWidget(self.listWidget, 1, 0)
-        layout.addLayout(BLayoutHelper(self.addButton, self.removeButton, None,
-                                       orientation=QBoxLayout.TopToBottom), 1, 1)
+        layout.addLayout(
+            BLayoutHelper(self.addButton, self.removeButton, None, orientation=QBoxLayout.TopToBottom), 1, 1
+        )
         self.setLayout(layout)
         self.itemEdit.returnPressed.connect(self.addItem)
         self.addButton.clicked.connect(self.addItem)

@@ -21,7 +21,7 @@ def _write(device, packer, *values):
 
 def _read(device, packer):
     values = packer.unpack_from(device)
-    del device[0:packer.size]
+    del device[0 : packer.size]
     return values
 
 
@@ -134,8 +134,7 @@ def readString(device, encoding="utf-8"):
 
 
 def writeDateTime(device, value):
-    _write(device, DateTimePacker, value.year, value.month,
-           value.day, value.hour, value.minute, value.second)
+    _write(device, DateTimePacker, value.year, value.month, value.day, value.hour, value.minute, value.second)
 
 
 def readDateTime(device):

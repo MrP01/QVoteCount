@@ -33,7 +33,9 @@ class ContainerEngine(core.AbstractContainerEngine):
         idStart = self.cursor.lastrowid
         l = [1]
 
-        def fun(item): l[0] += 1; return self._makeVals(item)
+        def fun(item):
+            l[0] += 1
+            return self._makeVals(item)
 
         self.cursor.executemany(self._addSql, map(fun, items))
         return range(idStart, idStart + l[0])
@@ -117,41 +119,39 @@ class ContainerEngine(core.AbstractContainerEngine):
             if name == "id":
                 fields.append("id INTEGER PRIMARY KEY")  # doesn't use rowid/oid for clarity purposes
                 continue
-            fields.append(r"{name} {type} DEFAULT '{default}'".format(name=name,
-                                                                      type=ContainerEngine.fieldType(attr),
-                                                                      default=attr.intern_default))
-        return "CREATE TABLE IF NOT EXISTS {tblName} ({fields});".format(
-            tblName=self.tblName, fields=", ".join(fields))
+            fields.append(
+                r"{name} {type} DEFAULT '{default}'".format(
+                    name=name, type=ContainerEngine.fieldType(attr), default=attr.intern_default
+                )
+            )
+        return "CREATE TABLE IF NOT EXISTS {tblName} ({fields});".format(tblName=self.tblName, fields=", ".join(fields))
 
     def _createSql(self):
         """pre-defines all sql statements, so it works faster"""
         # same as insertSql but without assigning an id
-        self._addSql = "INSERT INTO {tblName} ({fields}) VALUES ({values});" \
-            .format(tblName=self.tblName, fields=", ".join(name for name in self.colNames if name != "id"),
-                    values=", ".join(":" + name for name in self.colNames if name != "id"))
-        self._insertSql = "INSERT INTO {tblName} ({fields}) VALUES ({values});" \
-            .format(tblName=self.tblName, fields=", ".join(self.colNames),
-                    values=", ".join(":" + name for name in self.colNames))
-        self._setSql = "UPDATE {tblName} SET {fields} WHERE id=:id;" \
-            .format(tblName=self.tblName, fields=", ".join("{name}=:{name}".format(name=name)
-                                                           for name in self.colNames if name != "id"))
-        self._getSql = "SELECT * FROM {tblName} WHERE id=?;" \
-            .format(tblName=self.tblName)
-        self._getManySql = "SELECT * FROM {tblName} WHERE id in (?);" \
-            .format(tblName=self.tblName)
-        self._getAllSql = "SELECT * FROM {tblName};" \
-            .format(tblName=self.tblName)
-        self._getIdsSql = "SELECT id FROM {tblName};" \
-            .format(tblName=self.tblName)
-        self._checkItemSql = "SELECT id FROM {tblName} WHERE id=? LIMIT 1;" \
-            .format(tblName=self.tblName)
-        self._countSql = "SELECT COUNT (*) FROM {tblName};" \
-            .format(tblName=self.tblName)
-        self._removeSql = "DELETE FROM {tblName} WHERE id=?;" \
-            .format(tblName=self.tblName)
+        self._addSql = "INSERT INTO {tblName} ({fields}) VALUES ({values});".format(
+            tblName=self.tblName,
+            fields=", ".join(name for name in self.colNames if name != "id"),
+            values=", ".join(":" + name for name in self.colNames if name != "id"),
+        )
+        self._insertSql = "INSERT INTO {tblName} ({fields}) VALUES ({values});".format(
+            tblName=self.tblName,
+            fields=", ".join(self.colNames),
+            values=", ".join(":" + name for name in self.colNames),
+        )
+        self._setSql = "UPDATE {tblName} SET {fields} WHERE id=:id;".format(
+            tblName=self.tblName,
+            fields=", ".join("{name}=:{name}".format(name=name) for name in self.colNames if name != "id"),
+        )
+        self._getSql = "SELECT * FROM {tblName} WHERE id=?;".format(tblName=self.tblName)
+        self._getManySql = "SELECT * FROM {tblName} WHERE id in (?);".format(tblName=self.tblName)
+        self._getAllSql = "SELECT * FROM {tblName};".format(tblName=self.tblName)
+        self._getIdsSql = "SELECT id FROM {tblName};".format(tblName=self.tblName)
+        self._checkItemSql = "SELECT id FROM {tblName} WHERE id=? LIMIT 1;".format(tblName=self.tblName)
+        self._countSql = "SELECT COUNT (*) FROM {tblName};".format(tblName=self.tblName)
+        self._removeSql = "DELETE FROM {tblName} WHERE id=?;".format(tblName=self.tblName)
         # noinspection SqlWithoutWhere
-        self._clearSql = "DELETE FROM {tblName};" \
-            .format(tblName=self.tblName)
+        self._clearSql = "DELETE FROM {tblName};".format(tblName=self.tblName)
 
     def _makeVals(self, item):
         return {name: getattr(item, name) for name in self.colNames}
@@ -215,8 +215,7 @@ class SqliteEngine(core.AbstractDatabaseEngine):
         new = not os.path.exists(self._path)
         self._createConn()
         if new:
-            sql = "".join(cont.engine.createTableSchema()
-                          for cont in self.database.containers.values())
+            sql = "".join(cont.engine.createTableSchema() for cont in self.database.containers.values())
             print("EXEC SQL:", sql)
             self.connection.executescript(sql)
             self.commit()
@@ -230,9 +229,9 @@ class SqliteEngine(core.AbstractDatabaseEngine):
     def connection(self):  # "Public" attribute, so it is possible to execute sql-statements from outside
         """Returns a sqlite3.Connection object
 
-         Returns the connection object for the current thread;
-         if necessary, a new one is created
-         """
+        Returns the connection object for the current thread;
+        if necessary, a new one is created
+        """
         return self._connections[threading.get_ident()]
 
     def _createConn(self):

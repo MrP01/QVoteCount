@@ -1,4 +1,4 @@
-from .core import (AbstractDatabaseEventFilter, AbstractContainerEventFilter)
+from .core import AbstractDatabaseEventFilter, AbstractContainerEventFilter
 
 
 class DbLogger(AbstractDatabaseEventFilter):

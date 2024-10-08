@@ -5,7 +5,7 @@ from PySide6.QtCore import *
 from PySide6.QtGui import QKeySequence
 from PySide6.QtWidgets import *
 
-matplotlib.use('Qt5Agg')
+matplotlib.use("Qt5Agg")
 # matplotlib.rcParams['backend.qt4'] = 'PySide6'
 
 from matplotlib.figure import Figure
@@ -38,9 +38,15 @@ class StatView(FigureCanvas):
         pieChart = list(points.values())
         if sum(pieChart) == 0:
             pieChart = [1] * len(participants)
-        self.pointsAxes.pie(pieChart, explode=[0.1] * len(participants),
-                            labels=[parti.name for parti in participants],
-                            shadow=True, autopct="%1.1f%%", startangle=90, colors=self.colors)
+        self.pointsAxes.pie(
+            pieChart,
+            explode=[0.1] * len(participants),
+            labels=[parti.name for parti in participants],
+            shadow=True,
+            autopct="%1.1f%%",
+            startangle=90,
+            colors=self.colors,
+        )
 
         # Top1 Votes
         self.topAxes = self.figure.add_subplot(2, 1, 2)
@@ -48,9 +54,15 @@ class StatView(FigureCanvas):
         pieChart = [topV[1] for pId, topV in topVotes.items()]
         if sum(pieChart) == 0:
             pieChart = [1] * len(participants)
-        self.topAxes.pie(pieChart, explode=[0.1] * len(participants),
-                         labels=[parti.name for parti in participants],
-                         shadow=True, autopct="%1.1f%%", startangle=90, colors=self.colors)
+        self.topAxes.pie(
+            pieChart,
+            explode=[0.1] * len(participants),
+            labels=[parti.name for parti in participants],
+            shadow=True,
+            autopct="%1.1f%%",
+            startangle=90,
+            colors=self.colors,
+        )
 
         self.updateButton = QPushButton("Update")
         self.updateButton.clicked.connect(self.updateView)
@@ -66,19 +78,32 @@ class StatView(FigureCanvas):
         points, topVotes, voteCount, invalidVotes = self.mainManager.dbManager.db.calcPoints()
         self.pointsAxes.clear()
         self.pointsAxes.set_title("Points")
-        self.pointsAxes.pie(list(points.values()), explode=[0.1] * len(participants),
-                            labels=[parti.name for parti in participants],
-                            shadow=True, autopct="%1.1f%%", startangle=90, colors=self.colors)
+        self.pointsAxes.pie(
+            list(points.values()),
+            explode=[0.1] * len(participants),
+            labels=[parti.name for parti in participants],
+            shadow=True,
+            autopct="%1.1f%%",
+            startangle=90,
+            colors=self.colors,
+        )
         self.topAxes.clear()
         self.topAxes.set_title("Top1 Votes")
-        self.topAxes.pie([topV[1] for pId, topV in topVotes.items()], explode=[0.1] * len(participants),
-                         labels=[parti.name for parti in participants],
-                         shadow=True, autopct="%1.1f%%", startangle=90, colors=self.colors)
+        self.topAxes.pie(
+            [topV[1] for pId, topV in topVotes.items()],
+            explode=[0.1] * len(participants),
+            labels=[parti.name for parti in participants],
+            shadow=True,
+            autopct="%1.1f%%",
+            startangle=90,
+            colors=self.colors,
+        )
         if self._updateCount % 2 == 0:
             self.resize(self.size() + QSize(1, 1))
         else:
             self.resize(self.size() - QSize(1, 1))
         self._updateCount += 1
+
     # print(points, topVotes, voteCount, invalidVotes)
 
 
@@ -167,8 +192,9 @@ class VoteEditor(QWidget):
         # 	mainManager.dbManager.db.voteGroups)
         # uiWrapper.setModelAccessClient(self.voteApp.appManager.mainManager.dbManager.dbClient)
         # with self.voteApp.appManager.mainManager.dbManager.dbClient:
-        self.groupSelector.addItems([group.name for group in self.voteApp.appManager.
-                                    mainManager.dbManager.db.voteGroups])
+        self.groupSelector.addItems(
+            [group.name for group in self.voteApp.appManager.mainManager.dbManager.db.voteGroups]
+        )
 
         layout1 = QFormLayout()
         layout1.addRow("Vote 1 (6 points)", self.keyListener1)
@@ -196,25 +222,30 @@ class VoteEditor(QWidget):
                 except:
                     return None
 
-            vote = Vote(vote1=getPartic(keyAssigs[self.keyListener1.pressedKey]),
-                        vote2=getPartic(keyAssigs[self.keyListener2.pressedKey]),
-                        vote3=getPartic(keyAssigs[self.keyListener3.pressedKey]),
-                        vote4=getPartic(keyAssigs[self.keyListener4.pressedKey]),
-                        vote5=getPartic(keyAssigs[self.keyListener5.pressedKey]),
-                        vote6=getPartic(keyAssigs[self.keyListener6.pressedKey]),
-                        vote_group=self.voteApp.appManager.mainManager.dbManager.db.voteGroups.getItem(
-                            self.groupSelector.currentIndex() + 1))  # Todo
+            vote = Vote(
+                vote1=getPartic(keyAssigs[self.keyListener1.pressedKey]),
+                vote2=getPartic(keyAssigs[self.keyListener2.pressedKey]),
+                vote3=getPartic(keyAssigs[self.keyListener3.pressedKey]),
+                vote4=getPartic(keyAssigs[self.keyListener4.pressedKey]),
+                vote5=getPartic(keyAssigs[self.keyListener5.pressedKey]),
+                vote6=getPartic(keyAssigs[self.keyListener6.pressedKey]),
+                vote_group=self.voteApp.appManager.mainManager.dbManager.db.voteGroups.getItem(
+                    self.groupSelector.currentIndex() + 1
+                ),
+            )  # Todo
         except KeyError:  # Didn't work (key not assigned)
-            MessagePopup.infoPopup(self.window(), "No key assigned",
-                                   "No participant assigned to key.")
+            MessagePopup.infoPopup(self.window(), "No key assigned", "No participant assigned to key.")
             self.clear()
             return
         if self.validate(vote):
             # with self.voteApp.appManager.mainManager.dbManager.dbClient:
             self.voteApp.appManager.mainManager.dbManager.db.votes.addItem(vote)
         else:
-            MessagePopup.infoPopup(self.voteApp.appManager.mainManager.mainWindow,
-                                   "Invalid vote", "A single Vote can't vote twice for a Participant.")
+            MessagePopup.infoPopup(
+                self.voteApp.appManager.mainManager.mainWindow,
+                "Invalid vote",
+                "A single Vote can't vote twice for a Participant.",
+            )
         self.clear()
 
     def clear(self):
@@ -228,17 +259,25 @@ class VoteEditor(QWidget):
 
     def invalidVote(self):
         # with self.voteApp.appManager.mainManager.dbManager.dbClient:
-        self.voteApp.appManager.mainManager.dbManager.db.votes.addItem(Vote(valid=False,
-                                                                            vote_group=self.voteApp.appManager.mainManager.dbManager.db.voteGroups.getItem(
-                                                                                self.groupSelector.currentIndex() + 1)))  # Todo
+        self.voteApp.appManager.mainManager.dbManager.db.votes.addItem(
+            Vote(
+                valid=False,
+                vote_group=self.voteApp.appManager.mainManager.dbManager.db.voteGroups.getItem(
+                    self.groupSelector.currentIndex() + 1
+                ),
+            )
+        )  # Todo
         self.clear()
 
     def validate(self, vote):
         takenVotes = []
         for partic in (vote.vote1, vote.vote2, vote.vote3, vote.vote4, vote.vote5, vote.vote6):
             if (partic is not None) and (partic in takenVotes):
-                MessagePopup.infoPopup(self.voteApp.appManager.mainManager.mainWindow,
-                                       "Invalid vote", "A single Vote can't vote twice for a Participant.")
+                MessagePopup.infoPopup(
+                    self.voteApp.appManager.mainManager.mainWindow,
+                    "Invalid vote",
+                    "A single Vote can't vote twice for a Participant.",
+                )
                 return False
             takenVotes.append(partic)
         # if (min(len(takenVotes), 6) < self.voteApp.appManager.mainManager.dbManager.db.
@@ -258,8 +297,13 @@ class VoteEditor(QWidget):
     def _keyPressed(self, key, keyListener, nextFocus=None):
         # with self.voteApp.appManager.mainManager.dbManager.dbClient:
         try:
-            keyListener.label.setText(str(self.voteApp.appManager.mainManager.dbManager.db.
-                                          participants.getItem(self.voteApp.keyAssignmentEditor.keyAssignments[key])))
+            keyListener.label.setText(
+                str(
+                    self.voteApp.appManager.mainManager.dbManager.db.participants.getItem(
+                        self.voteApp.keyAssignmentEditor.keyAssignments[key]
+                    )
+                )
+            )
         except KeyError:
             keyListener.label.setText("INVALID!")
         if nextFocus is not None:
@@ -292,7 +336,11 @@ class VoteApp(App):
         l1.addWidget(self.voteEditor, 1, 0, 1, 2)
         w1.setLayout(l1)
         w2 = QWidget()
-        w2.setLayout(BLayoutHelper(self.statView, self.statView.updateButton, self.genreportButton, orientation=QBoxLayout.TopToBottom))
+        w2.setLayout(
+            BLayoutHelper(
+                self.statView, self.statView.updateButton, self.genreportButton, orientation=QBoxLayout.TopToBottom
+            )
+        )
         splitter = QSplitter()
         splitter.addWidget(w1)
         splitter.addWidget(w2)
@@ -301,6 +349,7 @@ class VoteApp(App):
     def generateReport(self):
         report_file = os.path.abspath(self.appManager.mainManager.dbManager.generate_report())
         import webbrowser
+
         webbrowser.open("file://" + report_file)
 
 
@@ -308,10 +357,13 @@ class SetupApp(App):
     def __init__(self, appManager):
         App.__init__(self, appManager, windowTitle="Setup Election")
         # with self.appManager.mainManager.dbManager.dbClient:
-        self.participantList = SimpleTextList("Participants", items=(parti.name for parti in
-                                                                     self.appManager.mainManager.dbManager.db.participants.allItems()))
-        self.groupList = SimpleTextList("Groups", items=(group.name for group in
-                                                         self.appManager.mainManager.dbManager.db.voteGroups.allItems()))
+        self.participantList = SimpleTextList(
+            "Participants",
+            items=(parti.name for parti in self.appManager.mainManager.dbManager.db.participants.allItems()),
+        )
+        self.groupList = SimpleTextList(
+            "Groups", items=(group.name for group in self.appManager.mainManager.dbManager.db.voteGroups.allItems())
+        )
         self.submitButton = QPushButton("Submit")
         layout = QVBoxLayout()
         layout.addWidget(self.participantList)
@@ -329,9 +381,11 @@ class SetupApp(App):
         #     self.appManager.mainManager.dbManager.db.participants.addItems()
         self.appManager.mainManager.dbManager.db.participants.clear()
         self.appManager.mainManager.dbManager.db.participants.addItems(
-            Participant(name=name) for name in self.participantList.allItems())
+            Participant(name=name) for name in self.participantList.allItems()
+        )
         self.appManager.mainManager.dbManager.db.voteGroups.clear()
         self.appManager.mainManager.dbManager.db.voteGroups.addItems(
-            VoteGroup(name=item) for item in self.groupList.allItems())
+            VoteGroup(name=item) for item in self.groupList.allItems()
+        )
         self.quit()
         self.appManager.voteApp()

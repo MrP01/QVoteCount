@@ -19,11 +19,15 @@ class DbManager(Section):
         print(30 * "-")
         print("Results [{} valid and {} invalid votes]:".format(voteCount, invalidVotes))
         for partic in points.keys():
-            print("{}: {} points ({:.2f}% of total) and {} top1 votes ({:.2f}% of total)".format(
-                self.db.participants.getItem(partic),
-                points[partic], points[partic] / sum_points * 100,
-                topVotes[partic][1], topVotes[partic][1] / voteCount * 100
-            ))
+            print(
+                "{}: {} points ({:.2f}% of total) and {} top1 votes ({:.2f}% of total)".format(
+                    self.db.participants.getItem(partic),
+                    points[partic],
+                    points[partic] / sum_points * 100,
+                    topVotes[partic][1],
+                    topVotes[partic][1] / voteCount * 100,
+                )
+            )
         print(30 * "-")
 
         for partic in topVotes.keys():
@@ -38,19 +42,24 @@ class DbManager(Section):
         today = datetime.date.today()
         report_file = "Bericht Schulsprecherwahl %s.html" % today.year
         with open(report_file, "w") as f:
-            f.write(template.render(
-                today=today,
-                sum_points=sum_points,
-                valid_votes=voteCount,
-                invalid_votes=invalidVotes,
-                participants=[{
-                    "name": self.db.participants.getItem(partic_id),
-                    "points": pts,
-                    "points_perc": pts / sum_points * 100,
-                    "top_votes": topVotes[partic_id],
-                    "top_votes_perc": topVotes[partic_id],
-                } for partic_id, pts in points.items()]
-            ))
+            f.write(
+                template.render(
+                    today=today,
+                    sum_points=sum_points,
+                    valid_votes=voteCount,
+                    invalid_votes=invalidVotes,
+                    participants=[
+                        {
+                            "name": self.db.participants.getItem(partic_id),
+                            "points": pts,
+                            "points_perc": pts / sum_points * 100,
+                            "top_votes": topVotes[partic_id],
+                            "top_votes_perc": topVotes[partic_id],
+                        }
+                        for partic_id, pts in points.items()
+                    ],
+                )
+            )
         return report_file
 
     def start(self, sessionData):

@@ -37,8 +37,9 @@ class requiresPermission(object):
 
     def __call__(self, func):
         def wrapper(container, *args, **kwargs):
-            container.database.checkUserPermissions(container.database.currentUser().id,
-                                                    container.id, *self.permissionTypes)
+            container.database.checkUserPermissions(
+                container.database.currentUser().id, container.id, *self.permissionTypes
+            )
             return func(container, *args, **kwargs)
 
         return wrapper
@@ -139,9 +140,11 @@ class UADatabase(Database):
         for container in self.containers:
             for permissionType in (Permission.Add, Permission.Get, Permission.Set, Permission.Remove):
                 permissionId = self.permissions.addItemSecretly(
-                    Permission(containerId=container.id, type=permissionType))
+                    Permission(containerId=container.id, type=permissionType)
+                )
                 self.permissionAssignments.addItemSecretly(
-                    PermissionAssignment(groupId=groupId, permissionId=permissionId))
+                    PermissionAssignment(groupId=groupId, permissionId=permissionId)
+                )
         return userId, groupId
 
     def getUserByName(self, userName):
@@ -150,12 +153,18 @@ class UADatabase(Database):
         raise ItemError(-2)
 
     def getUserGroupsIds(self, userId):
-        return [membership.groupId for membership in
-                self.memberships.filterItemsSecretly(lambda membership: membership.userId == userId)]
+        return [
+            membership.groupId
+            for membership in self.memberships.filterItemsSecretly(lambda membership: membership.userId == userId)
+        ]
 
     def getGroupPermissionsIds(self, groupId):
-        return [assignment.permissionId for assignment in
-                self.permissionAssignments.filterItemsSecretly(lambda assignment: assignment.groupId == groupId)]
+        return [
+            assignment.permissionId
+            for assignment in self.permissionAssignments.filterItemsSecretly(
+                lambda assignment: assignment.groupId == groupId
+            )
+        ]
 
     def checkUser(self, userName, password):
         try:

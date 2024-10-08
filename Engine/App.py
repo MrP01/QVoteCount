@@ -117,6 +117,8 @@ class ItemApp(App):
     def __init__(self, mainManager, mode=None, showingType=0):
         App.__init__(self, mainManager, showingType)
         self.mode = mode
+
+
 # ~ self.dirty=False
 # ~ self.itemId=-1
 

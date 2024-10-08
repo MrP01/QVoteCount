@@ -1,7 +1,7 @@
 import netifaces
 
-from PySide6.QtCore import (QObject, QByteArray, QDataStream, QIODevice, QThread, Signal, QEventLoop, QTimer)
-from PySide6.QtNetwork import (QAbstractSocket, QTcpServer, QTcpSocket)
+from PySide6.QtCore import QObject, QByteArray, QDataStream, QIODevice, QThread, Signal, QEventLoop, QTimer
+from PySide6.QtNetwork import QAbstractSocket, QTcpServer, QTcpSocket
 from base.ItemStorage import ItemStorage, Item
 from base.dataStream import DataStream
 
@@ -112,6 +112,7 @@ class Interface(object):
 
 # Client API
 
+
 class RequestArguments(object):
     pass
 
@@ -197,6 +198,7 @@ class PostOffice(QObject):
 
 
 # Server API
+
 
 class Server(QTcpServer):
     def __init__(self, parent=None):
@@ -296,8 +298,7 @@ class SocketHandler(QObject):
 
     def receiveRequest(self, data):
         stream = DataStream(data)
-        self.handleRequest(stream.readUInt16(), stream.readString(),
-                           stream.readByteArray())
+        self.handleRequest(stream.readUInt16(), stream.readString(), stream.readByteArray())
 
     def sendResponse(self, requestId, data):
         newData = bytearray()

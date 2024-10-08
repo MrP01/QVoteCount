@@ -50,22 +50,22 @@ class ElectionDb(Database):
                 invalidVotes += 1
                 continue
             if vote.vote1:
-                points[vote.vote1.id] += maxP;
+                points[vote.vote1.id] += maxP
                 topVotes[vote.vote1.id][1] += 1
             if vote.vote2:
-                points[vote.vote2.id] += maxP - 1;
+                points[vote.vote2.id] += maxP - 1
                 topVotes[vote.vote2.id][2] += 1
             if vote.vote3:
-                points[vote.vote3.id] += maxP - 2;
+                points[vote.vote3.id] += maxP - 2
                 topVotes[vote.vote3.id][3] += 1
             if vote.vote4:
-                points[vote.vote4.id] += maxP - 3;
+                points[vote.vote4.id] += maxP - 3
                 topVotes[vote.vote4.id][4] += 1
             if vote.vote5:
-                points[vote.vote5.id] += maxP - 4;
+                points[vote.vote5.id] += maxP - 4
                 topVotes[vote.vote5.id][5] += 1
             if vote.vote6:
-                points[vote.vote6.id] += maxP - 5;
+                points[vote.vote6.id] += maxP - 5
                 topVotes[vote.vote6.id][6] += 1
             voteCount += 1
         del points[-1], topVotes[-1]

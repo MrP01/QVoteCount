@@ -12,8 +12,8 @@ class QtDataStream(DataStream):
         self.writeInt16(rect.height())
 
     def readQRect(self):
-        return QRect(self.readInt16(), self.readInt16(),
-                     self.readInt16(), self.readInt16())
+        return QRect(self.readInt16(), self.readInt16(), self.readInt16(), self.readInt16())
+
 
 # def _writeQtObj(self, fun, obj):
 # 	fun(obj)
